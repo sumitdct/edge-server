@@ -1,0 +1,61 @@
+# -- GLOBAL VARIABLE DECLARATION --
+identityProviderUrl: http://192.241.133.120:1994
+
+# -- MANDATORY CONFIGURATION --
+spring:
+  application:
+    name: edge-server
+  jmx:
+    default-domain: ${spring.application.name}
+  http:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+server:
+  port: 2626
+endpoints:
+  jmx:
+    domain: ${spring.jmx.default-domain}
+
+
+# -- ZUUL CONFIGURATIONS --
+
+zuul:
+  host:
+    connect-timeout-millis: 6000000
+    socket-timeout-millis: 6000000
+  prefix: /api
+  routes:
+    commons-api:
+      path: /core/**
+      serviceId: commons-api #-- Configure serviceId with Eureka
+    identity-provider:
+      path: /secure/**
+      serviceId: identity-provider #-- Configure serviceId with Eureka
+
+
+# -- SECURITY CONFIGURATION --
+management:
+  security:
+    enabled: false
+security:
+  oauth2:
+    resource:
+      user-info-uri: ${identityProviderUrl}/user
+
+# -- RIBBON & EUREKA CONFIGURATION REQUIRED --
+ribbon:
+  ConnectTimeout: 30000
+  ReadTimeout: 990000
+  maxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  eureka:
+    enabled: true
+# -- HYSTRIX CONFIGURATION --
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
