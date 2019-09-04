@@ -1,5 +1,5 @@
 # -- GLOBAL VARIABLE DECLARATION --
-identityProviderUrl: http://192.241.133.120:1994
+identityProviderUrl: http://localhost:1994
 
 # -- MANDATORY CONFIGURATION --
 spring:
